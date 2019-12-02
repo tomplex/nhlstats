@@ -5,6 +5,8 @@ a library and CLI tool for collecting stats from the NHL API.
 
 #### Install
 
+Works on Python3.5+.
+
 ```bash
 pip install nhlstats
 ```
@@ -14,7 +16,6 @@ This will add a new command to your system, `nhl`.
 #### Usage - library
 
 ```python
-
 from nhlstats import list_games, list_plays, list_plays_raw
 from nhlstats.formatters import csv
 
@@ -28,7 +29,6 @@ for game in list_games():  # No args will list all games today
         
     # all plays, in raw form from the API. If you want.
     plays_raw = list_plays_raw(game_id)
-
 ```
 
 If you use Pandas, then you can create a dataframe directly from the data which comes back from list_plays:
@@ -89,54 +89,54 @@ The initial events, as received from the NHL, look like this:
 
 ```json
 {
-"players": [
-  {
-    "player": {
-      "id": 8474189,
-      "fullName": "Lars Eller",
-      "link": "/api/v1/people/8474189"
+  "players": [
+    {
+      "player": {
+        "id": 8474189,
+        "fullName": "Lars Eller",
+        "link": "/api/v1/people/8474189"
+      },
+      "playerType": "Winner"
     },
-    "playerType": "Winner"
+    {
+      "player": {
+        "id": 8470144,
+        "fullName": "Frans Nielsen",
+        "link": "/api/v1/people/8470144"
+      },
+      "playerType": "Loser"
+    }
+  ],
+  "result": {
+    "event": "Faceoff",
+    "eventCode": "DET52",
+    "eventTypeId": "FACEOFF",
+    "description": "Lars Eller faceoff won against Frans Nielsen"
   },
-  {
-    "player": {
-      "id": 8470144,
-      "fullName": "Frans Nielsen",
-      "link": "/api/v1/people/8470144"
-    },
-    "playerType": "Loser"
+  "about": {
+    "eventIdx": 3,
+    "eventId": 52,
+    "period": 1,
+    "periodType": "REGULAR",
+    "ordinalNum": "1st",
+    "periodTime": "00:00",
+    "periodTimeRemaining": "20:00",
+    "dateTime": "2019-12-01T00:08:26Z",
+    "goals": {
+      "away": 0,
+      "home": 0
+    }
+  },
+  "coordinates": {
+    "x": 0,
+    "y": 0
+  },
+  "team": {
+    "id": 15,
+    "name": "Washington Capitals",
+    "link": "/api/v1/teams/15",
+    "triCode": "WSH"
   }
-],
-"result": {
-  "event": "Faceoff",
-  "eventCode": "DET52",
-  "eventTypeId": "FACEOFF",
-  "description": "Lars Eller faceoff won against Frans Nielsen"
-},
-"about": {
-  "eventIdx": 3,
-  "eventId": 52,
-  "period": 1,
-  "periodType": "REGULAR",
-  "ordinalNum": "1st",
-  "periodTime": "00:00",
-  "periodTimeRemaining": "20:00",
-  "dateTime": "2019-12-01T00:08:26Z",
-  "goals": {
-    "away": 0,
-    "home": 0
-  }
-},
-"coordinates": {
-  "x": 0,
-  "y": 0
-},
-"team": {
-  "id": 15,
-  "name": "Washington Capitals",
-  "link": "/api/v1/teams/15",
-  "triCode": "WSH"
-}
 }
 ```
 
