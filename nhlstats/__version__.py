@@ -1,6 +1,6 @@
 __author__ = 'tcaruso'
 
-VERSION = (0, 0, 3)
+VERSION = (0, 0, 4)
 
 POST = None
 
