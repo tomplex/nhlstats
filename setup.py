@@ -44,6 +44,29 @@ REQUIRES_PYTHON = (3, 5, 0)
 PYPI_NAME = '{}'.format(PACKAGE_NAME)
 
 # ------------------------------------------------
+# setup() info
+
+about = {
+    'name': PACKAGE_NAME,
+    'description': DESCRIPTION,
+    'author': AUTHOR,
+    'author_email': EMAIL,
+    'url': URL,
+    'packages': find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    'include_package_data': True,
+    'entry_points': {
+        'console_scripts': ['nhl=nhlstats.cli.core:cli'],
+    },
+    'classifiers': [
+        # Trove classifiers
+        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ]
+}
+
+# ------------------------------------------------
 # Check Python version we're installing against. Bail if it's not correct. This will blow up both when we build the
 # package and when someone tries to install it.
 
@@ -58,13 +81,28 @@ REQUIRES_PYTHON = '>=' + '.'.join(map(str, REQUIRES_PYTHON))
 # Requirements gathering.
 
 requirements = parse_requirements(os.path.join(os.path.dirname(__file__), 'requirements.txt'), session=PipSession())
+about['install_requires'] = requirements
 
+# ------------------------------------------------
+# Versions handling
+
+version = {}
+with open(os.path.join(here, PYPI_NAME, '__version__.py')) as f:
+    exec(f.read(), about)
+
+about['version'] = version['__version__']
+
+
+# ------------------------------------------------
+# description metadata
 
 try:
     with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = '\n' + f.read()
+        about['long_description'] = '\n' + f.read()
+        about['long_description_content_type'] = 'text/markdown',
+
 except FileNotFoundError:
-    long_description = DESCRIPTION
+    about['long_description'] = DESCRIPTION
 
 
 class UploadCommand(Command):
@@ -104,28 +142,7 @@ class UploadCommand(Command):
 
 
 setup(
-    name=PYPI_NAME,
-    version='0.0.1',
-    description=DESCRIPTION,
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    author=AUTHOR,
-    author_email=EMAIL,
-    url=URL,
-    install_requires=[str(requirement.req) for requirement in requirements],
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
-    include_package_data=True,
-    entry_points={
-        'console_scripts': ['nhl=nhlstats.cli.core:cli'],
-    },
-    classifiers=[
-        # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: Implementation :: CPython',
-    ],
-    # setup.py publish support.
+    **about,
     cmdclass={
         'upload': UploadCommand,
     },
