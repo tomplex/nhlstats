@@ -50,4 +50,5 @@ def normalize_event(event):
 
 
 def list_of_dicts_to_csv(ld):
-    return ','.join(ld[0].keys()) + '\n' + '\n'.join(','.join(str(val) if (val or val == 0) else '' for val in row.values()) for row in ld)
+    return ','.join(ld[0].keys()) + '\n' + \
+           '\n'.join(','.join(str(val) if (val or val == 0) else '' for val in row.values()) for row in ld)

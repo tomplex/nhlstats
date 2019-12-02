@@ -52,6 +52,7 @@ REQUIRES_PYTHON = '>=' + '.'.join(map(str, REQUIRES_PYTHON))
 
 # ------------------------------------------------
 # Requirements gathering.
+requirements = parse_requirements('requirements.txt')
 
 
 class UploadCommand(Command):
@@ -102,7 +103,6 @@ setup(
     entry_points={
         'console_scripts': ['nhl=nhlstats.cli.core:cli'],
     },
-
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

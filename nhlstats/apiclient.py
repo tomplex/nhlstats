@@ -42,4 +42,3 @@ def list_plays(game_id):
         return
 
     return data['liveData']['plays']['allPlays']
-
