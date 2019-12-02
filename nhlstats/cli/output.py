@@ -1,13 +1,10 @@
 __author__ = 'tcaruso'
 
-import json
+import importlib
 
 import click
-import tabulate
 
 from enum import Enum
-
-from nhlstats.cli.helpers import list_of_dicts_to_csv
 
 
 class OutputFormat(Enum):
@@ -28,14 +25,8 @@ class OutputFormat(Enum):
             raise click.BadParameter(value)
 
     def echo(self, events: list) -> None:
-        if self.value == 'text':
-            click.echo(tabulate.tabulate(events, headers='keys'))
-
-        elif self.value == 'csv':
-            click.echo(list_of_dicts_to_csv(events))
-
-        elif self.value == 'json':
-            click.echo(json.dumps({'plays': events}))
-
-        else:
+        try:
+            formatter = importlib.import_module('nhlstats.formatters.{}'.format(self.value))
+            click.echo(formatter.dumps(events))
+        except:
             raise click.UsageError("Output format {} is not implemented.".format(self.value))
