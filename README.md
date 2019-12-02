@@ -6,7 +6,7 @@ a library and CLI tool for collecting stats from the NHL API.
 #### Install
 
 ```bash
-pip install nhlstatscli
+pip install nhlstats
 ```
 
 This will add a new command to your system, `nhl`.
