@@ -4,7 +4,7 @@ import datetime
 
 import requests
 
-from nhlstats import normalize
+from nhlstats import normalizers
 
 
 BASE_URL = "https://statsapi.web.nhl.com"
@@ -22,7 +22,7 @@ def list_games(start_date=None, end_date=None):
 
     data = resp.json()
 
-    return [normalize.game_summary(game) for date in data['dates'] for game in date['games']]
+    return [normalizers.game_summary(game) for date in data['dates'] for game in date['games']]
 
 
 def list_plays_raw(game_id):
@@ -37,7 +37,7 @@ def list_plays_raw(game_id):
 
 
 def list_plays(game_id):
-    return list(map(normalize.event, list_plays_raw(game_id)))
+    return normalizers.events(list_plays_raw(game_id))
 
 
 def list_shots(game_id):
