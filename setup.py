@@ -145,5 +145,5 @@ setup(
     **about,
     cmdclass={
         'upload': UploadCommand,
-    },
+    }
 )
