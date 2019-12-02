@@ -1,3 +1,5 @@
+import io
+
 __author__ = 'tcaruso'
 
 # !/usr/bin/env python
@@ -58,6 +60,13 @@ REQUIRES_PYTHON = '>=' + '.'.join(map(str, REQUIRES_PYTHON))
 requirements = parse_requirements(os.path.join(os.path.dirname(__file__), 'requirements.txt'), session=PipSession())
 
 
+try:
+    with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+        long_description = '\n' + f.read()
+except FileNotFoundError:
+    long_description = DESCRIPTION
+
+
 class UploadCommand(Command):
     """Support setup.py upload."""
 
@@ -98,6 +107,7 @@ setup(
     name=PYPI_NAME,
     version='0.0.1',
     description=DESCRIPTION,
+    long_description=long_description,
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
