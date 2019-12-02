@@ -1,9 +1,11 @@
+__author__ = 'tcaruso'
+
 import click
 
 from datetime import date
 
-from nhlstats.apiclient import list_games, list_plays
-from nhlstats.cli.helpers import ensure_yyymmdd_date, normalize_game_summary, normalize_event
+from nhlstats.apiclient import list_games, list_plays, list_shots
+from nhlstats.cli.helpers import ensure_yyymmdd_date
 from nhlstats.cli.output import OutputFormat
 
 
@@ -21,8 +23,7 @@ def _list_games(start_date, end_date, output_format: OutputFormat):
     List all games from START_DATE to END_DATE. Dates should be of the form YYYY-MM-DD. Both date arguments default to
     "today" by system time, so you can omit the final argument to get a range from the first date to today.
     """
-    games = list(map(normalize_game_summary, list_games(start_date, end_date)))
-    output_format.echo(games)
+    output_format.echo(list_games(start_date, end_date))
 
 
 @cli.command(name='list-plays')
@@ -32,8 +33,7 @@ def _list_plays(game_id, output_format: OutputFormat):
     """
     List all play events which occurred in the given GAME_ID.
     """
-    plays = list(map(normalize_event, list_plays(game_id)))
-    output_format.echo(plays)
+    output_format.echo(list_plays(game_id))
 
 
 @cli.command(name='list-shots')
@@ -43,8 +43,4 @@ def _list_shots(game_id, output_format: OutputFormat):
     """
     List all shot events which occurred in the given GAME_ID.
     """
-    plays = list(map(normalize_event, list_plays(game_id)))
-    plays = list(filter(
-        lambda p: 'SHOT' in p['event_type'] or p['event_type'] == 'GOAL', plays
-    ))
-    output_format.echo(plays)
+    output_format.echo(list_shots(game_id))

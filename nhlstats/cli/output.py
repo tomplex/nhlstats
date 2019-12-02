@@ -1,3 +1,5 @@
+__author__ = 'tcaruso'
+
 import json
 
 import click

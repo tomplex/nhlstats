@@ -117,7 +117,7 @@ the same event, "normalized", looks like this:
 }
 ```
 
-Using the `text` output format, we get a pretty-printed table:
+Using the `text` output format, we get a pretty-printed table with the same data:
 
 ```
 datetime                period  period_time    period_time_remaining    period_type      x    y  event_type       event_secondary_type     event_description                                                                 team_for    player_1             player_1_type      player_1_id  player_2             player_2_type      player_2_id  player_3          player_3_type      player_3_id  player_4          player_4_type      player_4_id
@@ -132,7 +132,7 @@ datetime                period  period_time    period_time_remaining    period_t
 ```
 
 
-Using CSV, we get csv-like output which can be redirected into a file, or viewed directly:
+Using the `csv` output format, we get csv-like output which can be redirected into a file, or viewed directly:
 
 ```bash
 nhl list-plays 2019020406 --output-format csv > 2019020406.csv
