@@ -44,7 +44,19 @@ plays = pd.DataFrame(list_plays(gameid))
 plays.head()
 ``` 
 
+If you use [petl](https://petl.readthedocs.io/en/stable/), then you can use `petl.fromdicts()` to work with the data:
 
+```python
+import petl as etl
+
+from nhlstats import list_plays
+
+gameid = "2019020418"
+
+pipeline = etl.fromdicts(list_plays(gameid))
+
+print(pipeline)
+```
 
 #### Usage - CLI
 
