@@ -1,0 +1,7 @@
+*.egg-info
+build/*
+dist/*
+*.csv
+*.json
+.idea
+*.pyc
