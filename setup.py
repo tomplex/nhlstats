@@ -10,8 +10,10 @@ from setuptools import find_packages, setup, Command
 
 try:
     from pip._internal.req import parse_requirements
+    from pip._internal.download import PipSession
 except ImportError:
     from pip.req import parse_requirements
+    from pip.download import PipSession
 except Exception:
     from pip import __version__ as __pip_version__
 
@@ -52,7 +54,8 @@ REQUIRES_PYTHON = '>=' + '.'.join(map(str, REQUIRES_PYTHON))
 
 # ------------------------------------------------
 # Requirements gathering.
-requirements = parse_requirements('requirements.txt')
+
+requirements = parse_requirements(os.path.join(os.path.dirname(__file__), 'requirements.txt'), session=PipSession())
 
 
 class UploadCommand(Command):
@@ -98,7 +101,7 @@ setup(
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
-    install_requires=requirements,
+    install_requires=[str(requirement.req) for requirement in requirements],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     include_package_data=True,
     entry_points={
