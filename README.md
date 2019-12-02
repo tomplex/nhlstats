@@ -1,6 +1,6 @@
-### NHL Stats CLI
+### nhlstats
 
-a CLI tool for collecting stats from the NHL API.
+a library and CLI tool for collecting stats from the NHL API.
 
 
 #### Install
@@ -11,7 +11,42 @@ pip install nhlstatscli
 
 This will add a new command to your system, `nhl`.
 
-#### Usage
+#### Usage - library
+
+```python
+
+from nhlstats import list_games, list_plays, list_plays_raw
+from nhlstats.formatters import csv
+
+# List all games today and write all plays from each as a csv file named like the game_id
+for game in list_games():  # No args will list all games today
+    game_id = game['game_id']
+    plays = list_plays(game_id)  # get plays, normalized
+    
+    with open('{}.csv'.format(game_id), 'w') as f:
+        csv.dump(plays, f)
+        
+    # all plays, in raw form from the API. If you want.
+    plays_raw = list_plays_raw(game_id)
+
+```
+
+If you use Pandas, then you can create a dataframe directly from the data which comes back from list_plays:
+
+```python
+from nhlstats import list_plays
+import pandas as pd
+
+gameid = "2019020418"
+
+plays = pd.DataFrame(list_plays(gameid))
+
+plays.head()
+``` 
+
+
+
+#### Usage - CLI
 
 ```
 ❯ nhl
