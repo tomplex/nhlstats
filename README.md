@@ -56,6 +56,21 @@ pipeline = etl.fromdicts(list_plays(gameid))
 print(pipeline)
 ```
 
+##### Formatters
+
+The formatters package formats play-by-play data into different types of output, for example CSV, JSON, or a Text-based table. Each formatter has a `dump` and `dumps` function which work similarly to Python's `json` module. If you want to save your data as JSON, for example:
+
+```python
+from nhlstats import list_plays
+from nhlstats.formatters import json
+
+plays = list_plays('gameid')
+with open('file.json', 'w') as f:
+    json.dump(plays, f)
+
+```
+
+
 #### Usage - CLI
 
 ```
