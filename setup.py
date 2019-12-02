@@ -35,7 +35,7 @@ URL = 'https://github.com/tomplex/nhlstats'
 EMAIL = 'carusot42@gmail.com'
 AUTHOR = 'Tom Caruso'
 # The minimum Python version required
-REQUIRES_PYTHON = (3, 6, 0)
+REQUIRES_PYTHON = (3, 5, 0)
 # PYPI_NAME is the name of the package on pypi. You'll use this name to install the package.
 PYPI_NAME = '{}'.format(PACKAGE_NAME)
 
