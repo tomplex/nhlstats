@@ -98,6 +98,7 @@ setup(
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
+    install_requires=requirements,
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     include_package_data=True,
     entry_points={
