@@ -99,7 +99,7 @@ about['version'] = version['__version__']
 try:
     with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
         about['long_description'] = '\n' + f.read()
-        about['long_description_content_type'] = 'text/markdown',
+        about['long_description_content_type'] = 'text/markdown'
 
 except FileNotFoundError:
     about['long_description'] = DESCRIPTION
