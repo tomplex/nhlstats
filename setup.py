@@ -88,7 +88,7 @@ about['install_requires'] = requirements
 
 version = {}
 with open(os.path.join(here, PYPI_NAME, '__version__.py')) as f:
-    exec(f.read(), about)
+    exec(f.read(), version)
 
 about['version'] = version['__version__']
 
