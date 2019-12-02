@@ -1,14 +1,25 @@
 ### nhlstats
 
-a library and CLI tool for collecting stats from the NHL API.
+a library and CLI tool for collecting stats from the NHL Live API.
 
 
 #### Install
 
-Works on Python3.5+.
+Compatible with Python3.5+.
+
+Use `pip`:
 
 ```bash
-pip install nhlstats
+python3 -m pip install nhlstats
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/tomplex/nhlstats.git ~/dev/nhlstats
+python3 -m pip install ~/dev/nhlstats
+# or
+python3 ~/dev/nhlstats/setup.py install
 ```
 
 This will add a new command to your system, `nhl`.
