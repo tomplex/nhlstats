@@ -14,7 +14,7 @@ def game_summary(gs):
     }
 
 
-def event(ev):
+def event(ev, max_players=1):
     e = {
         'datetime': ev['about']['dateTime'],
         'period': ev['about']['period'],
@@ -29,9 +29,19 @@ def event(ev):
         'team_for': ev.get('team', {}).get('triCode'),
     }
 
-    for idx, player in enumerate(ev.get('players', [])):
+    players = ev.get('players', [])
+    if len(players) < max_players:
+        players.extend([{}] * (max_players - len(players)))
+
+    for idx, player in enumerate(players):
         e['player_{}'.format(idx + 1)] = player.get('player', {}).get('fullName')
         e['player_{}_type'.format(idx + 1)] = player.get('playerType')
         e['player_{}_id'.format(idx + 1)] = player.get('player', {}).get('id')
 
     return e
+
+
+def events(evs):
+    max_players = max(len(e.get('players', [])) for e in evs)
+
+    return [event(ev, max_players) for ev in evs]
