@@ -14,6 +14,7 @@ pip install nhlstats
 This will add a new command to your system, `nhl`.
 
 #### Usage - library
+Let's say you want to write a script which you'll run once a day, which will find all games played on the given day and download all play-by-play data for each game into a CSV file, labelled with the game's ID.
 
 ```python
 from nhlstats import list_games, list_plays, list_plays_raw
@@ -26,9 +27,7 @@ for game in list_games():  # No args will list all games today
     
     with open('{}.csv'.format(game_id), 'w') as f:
         csv.dump(plays, f)
-        
-    # all plays, in raw form from the API. If you want.
-    plays_raw = list_plays_raw(game_id)
+
 ```
 
 If you use Pandas, then you can create a dataframe directly from the data which comes back from list_plays:
@@ -44,7 +43,7 @@ plays = pd.DataFrame(list_plays(gameid))
 plays.head()
 ``` 
 
-If you use [petl](https://petl.readthedocs.io/en/stable/), then you can use `petl.fromdicts()` to work with the data:
+If you use [petl](https://petl.readthedocs.io/en/stable/), then you can use `petl.fromdicts()` to create a `TableContainer`:
 
 ```python
 from nhlstats import list_plays
