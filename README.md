@@ -69,7 +69,9 @@ print(pipeline)
 
 ##### Formatters
 
-The formatters package formats play-by-play data into different types of output, for example CSV, JSON, or a Text-based table. Each formatter has a `dump` and `dumps` function which work similarly to Python's `json` module. If you want to save your data as JSON, for example:
+The formatters package formats play-by-play data into different types of output, for example CSV, JSON, or a 
+text-based table. Each formatter has a `dump` and `dumps` function which work similarly to Python's `json` module. 
+If you want to save your data as JSON, for example:
 
 ```python
 from nhlstats import list_plays
@@ -81,27 +83,63 @@ with open('file.json', 'w') as f:
 
 ```
 
+More detailed examples of the formatters are available below.
+
 
 #### Usage - CLI
 
 ```
-❯ nhl
+❯ nhl --help
 Usage: nhl [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
 
 Commands:
-  list-games
-  list-plays
-  list-shots
+  list-games  List all games from START_DATE to END_DATE.
+  list-plays  List all play events which occurred in the given GAME_ID.
+  list-shots  List all shot events which occurred in the given GAME_ID.
 ```
 
-Multiple output formats are available for collected data. The default is `text`, which will pretty-print the data out in tables.
-Other options include `csv`, `json`, which will output a nested JSON like `{"plays": [...]}`. 
+Use the `--output-format` option to specify how to display the collected data. This option is available with all commands. 
+The default is `text`, which will pretty-print the data as a table. Other options include `csv`, `json`, 
+which will output a nested JSON like `{"plays": [...]}`. The data from these commands will always be printed to stdout.
+On Linux, MacOS or Windows you can use the `>` to redirect stdout to a new file 
+(will overwrite the contents if it exists), or `>>` to append to a file, like so:
 
-Future plans include support for some RDBM systems.
+```bash
+nhl list-plays 2019020406 --output-format csv > 2019020406.csv  # create a new file
+nhl list-plays 2019020406 --output-format csv >> plays.csv  # append result to plays.csv
+```
 
+
+##### list-games
+
+```bash
+❯ nhl list-games --help
+Usage: nhl list-games [OPTIONS] [START_DATE] [END_DATE]
+
+  List all games from START_DATE to END_DATE. Dates should be of the form
+  YYYY-MM-DD. Both date arguments default to "today" by system time, so you
+  can omit the final argument to get a range from the first date to today.
+
+Options:
+  --output-format [text|csv|json|postgres]
+  --help                          Show this message and exit.
+```
+
+##### list-plays
+
+```bash
+❯ nhl list-plays --help
+Usage: nhl list-plays [OPTIONS] GAME_ID
+
+  List all play events which occurred in the given GAME_ID.
+
+Options:
+  --output-format [text|csv|json|postgres]
+  --help                          Show this message and exit.
+```
 
 ### Data schema
 
@@ -188,7 +226,11 @@ the same event, "normalized", looks like this:
 }
 ```
 
-Using the `text` output format, we get a pretty-printed table with the same data:
+### Formatters
+
+The currently available formatters are `csv`, `json`, and `text`.
+
+Using the `text` output format, we get a pretty-printed table with the data:
 
 ```
 datetime                period  period_time    period_time_remaining    period_type      x    y  event_type       event_secondary_type     event_description                                                                 team_for    player_1             player_1_type      player_1_id  player_2             player_2_type      player_2_id  player_3          player_3_type      player_3_id  player_4          player_4_type      player_4_id
@@ -203,11 +245,8 @@ datetime                period  period_time    period_time_remaining    period_t
 ```
 
 
-Using the `csv` output format, we get csv-like output which can be redirected into a file, or viewed directly:
+Using the `csv` formatter, we get csv-like output:
 
-```bash
-nhl list-plays 2019020406 --output-format csv > 2019020406.csv
-```
 
 ```csv
 datetime,period,period_time,period_time_remaining,period_type,x,y,event_type,event_secondary_type,event_description,team_for,player_1,player_1_type,player_1_id,player_2,player_2_type,player_2_id,player_3,player_3_type,player_3_id,player_4,player_4_type,player_4_id
@@ -221,3 +260,5 @@ datetime,period,period_time,period_time_remaining,period_type,x,y,event_type,eve
 2019-12-02T03:11:13Z,1,02:58,17:02,REGULAR,76.0,-17.0,SHOT,Backhand,Joakim Nygard Backhand saved by Jacob Markstrom,EDM,Joakim Nygard,Shooter,8481638,Jacob Markstrom,Goalie,8474593,,,,,,
 2019-12-02T03:11:24Z,1,03:09,16:51,REGULAR,7.0,-3.0,TAKEAWAY,,Takeaway by Tanner Pearson,VAN,Tanner Pearson,PlayerID,8476871,,,,,,,,,
 ```
+
+the `json` formatter returns JSON identical to the normalized event above.
