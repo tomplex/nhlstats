@@ -27,5 +27,7 @@ class OutputFormat(Enum):
         try:
             formatter = importlib.import_module('nhlstats.formatters.{}'.format(self.value))
             click.echo(formatter.dumps(events))
-        except:
+        except ImportError:
             raise click.UsageError("Output format {} is not implemented.".format(self.value))
+        except Exception as e:
+            raise click.Abort(str(e))
