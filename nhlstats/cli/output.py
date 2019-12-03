@@ -11,7 +11,6 @@ class OutputFormat(Enum):
     TEXT = 'text'
     CSV = 'csv'
     JSON = 'json'
-    POSTGRES = 'postgres'
 
     @staticmethod
     def options():
