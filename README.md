@@ -1,6 +1,10 @@
 ### nhlstats
 
-a library and CLI tool for collecting stats from the NHL Live API.
+A library and CLI tool for collecting stats from the NHL web API. 
+
+Currently, supported data types include event data such as shots / goals / hits / etc, shift information and general scheduling information.
+
+All data is accessible identically through the Python API or command-line tool.
 
 
 #### Install
@@ -28,7 +32,7 @@ This will add a new command to your system, `nhl`.
 Let's say you want to write a script which you'll run once a day, which will find all games played on the given day and download all play-by-play data for each game into a CSV file, labelled with the game's ID.
 
 ```python
-from nhlstats import list_games, list_plays, list_plays_raw
+from nhlstats import list_games, list_plays
 from nhlstats.formatters import csv
 
 # List all games today and write all plays from each as a csv file named like the game_id
@@ -41,17 +45,20 @@ for game in list_games():  # No args will list all games today
 
 ```
 
-If you use Pandas, then you can create a dataframe directly from the data which comes back from list_plays:
+If you use Pandas, then you can create a dataframe directly from the data which comes back from list_plays or list_shifts:
 
 ```python
-from nhlstats import list_plays
+from nhlstats import list_plays, list_shifts
 import pandas as pd
 
 gameid = "2019020418"
 
 plays = pd.DataFrame(list_plays(gameid))
+shifts = pd.DataFrame(list_shifts(gameid))
 
 plays.head()
+shifts.head()
+
 ``` 
 
 If you use [petl](https://petl.readthedocs.io/en/stable/), then you can use `petl.fromdicts()` to create a `TableContainer`:
@@ -69,7 +76,7 @@ print(pipeline)
 
 ##### Formatters
 
-The formatters package formats play-by-play data into different types of output, for example CSV, JSON, or a 
+The formatters package formats data into different types of output, for example CSV, JSON, or a 
 text-based table. Each formatter has a `dump` and `dumps` function which work similarly to Python's `json` module. 
 If you want to save your data as JSON, for example:
 
@@ -89,21 +96,22 @@ More detailed examples of the formatters are available below.
 #### Usage - CLI
 
 ```
-❯ nhl --help
+$ nhl --help
 Usage: nhl [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
 
 Commands:
-  list-games  List all games from START_DATE to END_DATE.
-  list-plays  List all play events which occurred in the given GAME_ID.
-  list-shots  List all shot events which occurred in the given GAME_ID.
+  list-games   List all games from START_DATE to END_DATE.
+  list-plays   List all play events which occurred in the given GAME_ID.
+  list-shifts  List all shifts which occurred in the given GAME_ID.
+  list-shots   List all shot events which occurred in the given GAME_ID.
 ```
 
 Use the `--output-format` option to specify how to display the collected data. This option is available with all commands. 
 The default is `text`, which will pretty-print the data as a table. Other options include `csv`, `json`, 
-which will output a nested JSON like `{"plays": [...]}`. The data from these commands will always be printed to stdout.
+which will output a nested JSON like `{"data": [...]}`. The data from these commands will always be printed to stdout.
 On Linux, MacOS or Windows you can use the `>` to redirect stdout to a new file 
 (will overwrite the contents if it exists), or `>>` to append to a file, like so:
 
@@ -116,7 +124,7 @@ nhl list-plays 2019020406 --output-format csv >> plays.csv  # append result to p
 ##### list-games
 
 ```bash
-❯ nhl list-games --help
+$ nhl list-games --help
 Usage: nhl list-games [OPTIONS] [START_DATE] [END_DATE]
 
   List all games from START_DATE to END_DATE. Dates should be of the form
@@ -124,21 +132,35 @@ Usage: nhl list-games [OPTIONS] [START_DATE] [END_DATE]
   can omit the final argument to get a range from the first date to today.
 
 Options:
-  --output-format [text|csv|json|postgres]
+  --output-format [text|csv|json]
   --help                          Show this message and exit.
 ```
 
 ##### list-plays
 
 ```bash
-❯ nhl list-plays --help
+$ nhl list-plays --help
 Usage: nhl list-plays [OPTIONS] GAME_ID
 
   List all play events which occurred in the given GAME_ID.
 
 Options:
-  --output-format [text|csv|json|postgres]
+  --output-format [text|csv|json]
   --help                          Show this message and exit.
+```
+
+##### list-shifts
+
+```bash
+nhl list-shifts --help
+Usage: nhl list-shifts [OPTIONS] GAME_ID
+
+  List all shot events which occurred in the given GAME_ID.
+
+Options:
+  --output-format [text|csv|json]
+  --help                          Show this message and exit.
+
 ```
 
 ### Data schema

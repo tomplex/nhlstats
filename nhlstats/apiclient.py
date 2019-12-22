@@ -11,6 +11,9 @@ BASE_URL = "https://statsapi.web.nhl.com"
 SCHEDULE_URL = BASE_URL + "/api/v1/schedule"
 LIVE_PLAYS_URL = BASE_URL + "/api/v1/game/{game_id}/feed/live"
 
+SHIFT_BASE_URL = "https://api.nhle.com/stats/rest/en/shiftcharts"
+SHIFT_TEMPLATE = SHIFT_BASE_URL + "?cayenneExp=gameId={game_id}"
+
 
 def list_games(start_date=None, end_date=None):
     """
@@ -84,3 +87,20 @@ def list_shots(game_id):
     return list(filter(
         lambda p: 'SHOT' in p['event_type'] or p['event_type'] == 'GOAL', plays
     ))
+
+
+def list_shifts(game_id):
+    """
+    Return all shifts which occurred in the game.
+
+    Args:
+        game_id:
+
+    Returns:
+
+    """
+    resp = requests.get(SHIFT_TEMPLATE.format(game_id=game_id))
+
+    data = resp.json()
+
+    return [normalizers.shift(d) for d in data['data']]

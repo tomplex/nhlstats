@@ -4,7 +4,7 @@ import click
 
 from datetime import date
 
-from nhlstats.apiclient import list_games, list_plays, list_shots
+from nhlstats.apiclient import list_games, list_plays, list_shots, list_shifts
 from nhlstats.cli.helpers import ensure_yyymmdd_date
 from nhlstats.cli.output import OutputFormat
 
@@ -44,3 +44,15 @@ def _list_shots(game_id, output_format: OutputFormat):
     List all shot events which occurred in the given GAME_ID.
     """
     output_format.echo(list_shots(game_id))
+
+
+@cli.command(name='list-shifts')
+@click.argument('game_id')
+@click.option('--output-format', type=click.Choice(OutputFormat.options()), default='text', callback=OutputFormat.from_click_option)
+def _list_shifts(game_id, output_format: OutputFormat):
+    """
+    List all shifts which occurred in the given GAME_ID.
+    """
+    output_format.echo(list_shifts(game_id))
+
+

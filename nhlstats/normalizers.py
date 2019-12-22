@@ -45,3 +45,20 @@ def events(evs):
     max_players = max(len(e.get('players', [])) for e in evs)
 
     return [event(ev, max_players) for ev in evs]
+
+
+def shift(sh):
+    return {
+        'id': sh['id'],
+        'first_name': sh['firstName'],
+        'last_name': sh['lastName'],
+        'period': sh['period'],
+        'shift_number': sh['shiftNumber'],
+        'start_time': sh['startTime'],
+        'end_time': sh['endTime'],
+        'duration': sh['duration'],
+        'team_abbreviation': sh['teamAbbrev'],
+        'event_description': sh['eventDescription'],
+        'event_details': sh['eventDetails'],
+        'event_number': sh['eventNumber']
+    }
