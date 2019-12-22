@@ -28,6 +28,16 @@ python3 ~/dev/nhlstats/setup.py install
 
 This will add a new command to your system, `nhl`.
 
+#### What this is (and isn't)
+
+This is meant to be a tool to help obtain data about hockey games. I aim to make it easy to download data which people 
+who are more statistically inclined than I can use to make pretty pictures and graphs. I am also trying to, generally, 
+normalize and flatten the data so it easier to use in software which processes tabular data. 
+
+It's *not* meant to be a data model of all of the data available about the NHL. I'm not trying to create models for
+ teams, rosters, players, events, etc. and all the hierarchies therein.  If that's what you want, then there is an excellent 
+ [library that already does that.](https://github.com/mhostetter/nhl)
+
 #### The GameID
 
 The key to NHL stats data is the "gameid", an ID which uniquely identifies every game. 
