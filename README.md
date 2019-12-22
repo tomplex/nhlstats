@@ -28,7 +28,20 @@ python3 ~/dev/nhlstats/setup.py install
 
 This will add a new command to your system, `nhl`.
 
+#### The GameID
+
+The key to NHL stats data is the "gameid", an ID which uniquely identifies every game. 
+It's a 10-digit numeric code which is formatted like so:
+
+    2019020565
+ 
+ 
+This tool uses the gameid to obtain data for specific games. You can use the `list_games` python function or the `list-games` CLI 
+command to get game ID's which you can then use to drill down and get information for the games you care about.
+
+
 #### Usage - library
+
 Let's say you want to write a script which you'll run once a day, which will find all games played on the given day and download all play-by-play data for each game into a CSV file, labelled with the game's ID.
 
 ```python
