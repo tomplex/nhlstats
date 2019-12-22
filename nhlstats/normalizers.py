@@ -53,8 +53,8 @@ def event(ev, max_players=1):
         'team_for': ev.get('team', {}).get('triCode')
     }
 
-    e['event_distance'] = _calculate_distance(e) if e['is_corsi'] else None
-    e['event_angle'] = _calculate_angle(e) if e['is_corsi'] else None
+    e['shot_distance'] = _calculate_distance(e) if e['is_corsi'] else None
+    e['shot_angle'] = _calculate_angle(e) if e['is_corsi'] else None
 
     players = ev.get('players', [])
     if len(players) < max_players:
