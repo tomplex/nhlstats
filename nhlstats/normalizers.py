@@ -1,8 +1,11 @@
+__author__ = 'tcaruso'
+
+
 import math
 
 from nhlstats.constants import FENWICK_EVENTS, SHOT_EVENTS, CORSI_EVENTS
 
-__author__ = 'tcaruso'
+NET_X_LOCATION = 89
 
 
 def game_summary(gs):
@@ -20,7 +23,7 @@ def game_summary(gs):
 
 def _calculate_distance(e):
     try:
-        delta_x = 89 - abs(int(e['x']))
+        delta_x = NET_X_LOCATION - abs(int(e['x']))
         delta_y = -1 * int(e['y'])
         return math.sqrt(delta_x ** 2 + delta_y ** 2)
     except Exception as e:
@@ -29,7 +32,7 @@ def _calculate_distance(e):
 
 def _calculate_angle(e):
     try:
-        return abs(math.atan(e['y'] / (89 - abs(e['x']))) * (180 / math.pi))
+        return abs(math.atan(e['y'] / (NET_X_LOCATION - abs(e['x']))) * (180 / math.pi))
     except:
         return None
 
