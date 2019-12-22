@@ -1,6 +1,13 @@
 __author__ = 'tcaruso'
 
 
+import math
+
+from nhlstats.constants import FENWICK_EVENTS, SHOT_EVENTS, CORSI_EVENTS
+
+NET_X_LOCATION = 89
+
+
 def game_summary(gs):
     return {
         'date': gs['gameDate'][:10],
@@ -14,7 +21,24 @@ def game_summary(gs):
     }
 
 
+def _calculate_distance(e):
+    try:
+        delta_x = NET_X_LOCATION - abs(int(e['x']))
+        delta_y = -1 * int(e['y'])
+        return math.sqrt(delta_x ** 2 + delta_y ** 2)
+    except Exception as e:
+        return None
+
+
+def _calculate_angle(e):
+    try:
+        return abs(math.atan(e['y'] / (NET_X_LOCATION - abs(e['x']))) * (180 / math.pi))
+    except:
+        return None
+
+
 def event(ev, max_players=1):
+    event_type = ev['result']['eventTypeId']
     e = {
         'datetime': ev['about']['dateTime'],
         'period': ev['about']['period'],
@@ -23,11 +47,17 @@ def event(ev, max_players=1):
         'period_type': ev['about']['periodType'],
         'x': ev.get('coordinates', {}).get('x'),
         'y': ev.get('coordinates', {}).get('y'),
-        'event_type': ev['result']['eventTypeId'],
+        'event_type': event_type,
         'event_secondary_type': ev['result'].get('secondaryType'),
         'event_description': ev['result'].get('description'),
-        'team_for': ev.get('team', {}).get('triCode'),
+        'is_shot': event_type in SHOT_EVENTS,
+        'is_corsi': event_type in CORSI_EVENTS,
+        'is_fenwick': event_type in FENWICK_EVENTS,
+        'team_for': ev.get('team', {}).get('triCode')
     }
+
+    e['shot_distance'] = _calculate_distance(e) if e['is_corsi'] else None
+    e['shot_angle'] = _calculate_angle(e) if e['is_corsi'] else None
 
     players = ev.get('players', [])
     if len(players) < max_players:
