@@ -50,6 +50,16 @@ This tool uses the gameid to obtain data for specific games. You can use the `li
 command to get game ID's which you can then use to drill down and get information for the games you care about.
 
 
+#### Derived stats
+
+Certain derived stats are added to each event. There are three flags - `is_shot`, `is_corsi`, `is_fenwick`, and a field 
+for `shot_distance` and `shot_angle`. The flag fields denote whether the event is a corsi, fenwick, or plain shot event, 
+and `shot_distance` and `shot_angle` describe the distance of the shot from the net in feet, and the angle of the shot
+where 0 is head-on with the net.
+
+If you want more derived stats added to the data feel free to let me know.
+
+
 #### Usage - library
 
 Let's say you want to write a script which you'll run once a day, which will find all games played on the given day and download all play-by-play data for each game into a CSV file, labelled with the game's ID.
