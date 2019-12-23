@@ -1,4 +1,4 @@
-__author__ = 'tcaruso'
+__author__ = "tcaruso"
 
 import datetime
 
@@ -32,11 +32,17 @@ def list_games(start_date=None, end_date=None):
     if end_date is None:
         end_date = str(datetime.date.today())
 
-    resp = requests.get(SCHEDULE_URL, params={'startDate': start_date, 'endDate': end_date})
+    resp = requests.get(
+        SCHEDULE_URL, params={"startDate": start_date, "endDate": end_date}
+    )
 
     data = resp.json()
 
-    return [normalizers.game_summary(game) for date in data['dates'] for game in date['games']]
+    return [
+        normalizers.game_summary(game)
+        for date in data["dates"]
+        for game in date["games"]
+    ]
 
 
 def list_plays_raw(game_id):
@@ -53,10 +59,10 @@ def list_plays_raw(game_id):
 
     data = resp.json()
 
-    if data.get('message'):
+    if data.get("message"):
         raise Exception("Invalid GAME_ID.")
 
-    return data['liveData']['plays']['allPlays']
+    return data["liveData"]["plays"]["allPlays"]
 
 
 def list_plays(game_id):
@@ -84,9 +90,9 @@ def list_shots(game_id):
     """
     plays = list_plays(game_id)
 
-    return list(filter(
-        lambda p: 'SHOT' in p['event_type'] or p['event_type'] == 'GOAL', plays
-    ))
+    return list(
+        filter(lambda p: "SHOT" in p["event_type"] or p["event_type"] == "GOAL", plays)
+    )
 
 
 def list_shifts(game_id):
@@ -103,4 +109,4 @@ def list_shifts(game_id):
 
     data = resp.json()
 
-    return [normalizers.shift(d) for d in data['data']]
+    return [normalizers.shift(d) for d in data["data"]]

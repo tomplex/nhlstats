@@ -1,4 +1,4 @@
-__author__ = 'tcaruso'
+__author__ = "tcaruso"
 
 import importlib
 
@@ -8,9 +8,9 @@ from enum import Enum
 
 
 class OutputFormat(Enum):
-    TEXT = 'text'
-    CSV = 'csv'
-    JSON = 'json'
+    TEXT = "text"
+    CSV = "csv"
+    JSON = "json"
 
     @staticmethod
     def options():
@@ -25,9 +25,13 @@ class OutputFormat(Enum):
 
     def echo(self, events: list) -> None:
         try:
-            formatter = importlib.import_module('nhlstats.formatters.{}'.format(self.value))
+            formatter = importlib.import_module(
+                "nhlstats.formatters.{}".format(self.value)
+            )
             click.echo(formatter.dumps(events))
         except ImportError:
-            raise click.UsageError("Output format {} is not implemented.".format(self.value))
+            raise click.UsageError(
+                "Output format {} is not implemented.".format(self.value)
+            )
         except Exception as e:
             raise click.Abort(str(e))

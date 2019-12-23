@@ -1,5 +1,8 @@
 ### nhlstats
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![PyPI version](https://badge.fury.io/py/nhlstats.svg)](https://badge.fury.io/py/nhlstats)
+
 A library and CLI tool for collecting stats from the NHL web API. 
 
 Currently, supported data types include event data such as shots / goals / hits / etc, shift information and general scheduling information.
