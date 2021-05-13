@@ -39,11 +39,12 @@ def _list_games(start_date, end_date, output_format: OutputFormat):
     default="text",
     callback=OutputFormat.from_click_option,
 )
-def _list_plays(game_id, output_format: OutputFormat):
+@click.option('--normalize/--no-normalize', default=True)
+def _list_plays(game_id, output_format: OutputFormat, normalize):
     """
     List all play events which occurred in the given GAME_ID.
     """
-    output_format.echo(list_plays(game_id))
+    output_format.echo(list_plays(game_id, normalize))
 
 
 @cli.command(name="list-shots")

@@ -45,12 +45,13 @@ def list_games(start_date=None, end_date=None):
     ]
 
 
-def list_plays_raw(game_id):
+def list_plays(game_id, normalize=True):
     """
-    Return the raw "play"/event objects from the NHL API.
+    Return normalized play dictionaries.
 
     Args:
         game_id:
+        normalize:
 
     Returns:
 
@@ -62,20 +63,13 @@ def list_plays_raw(game_id):
     if data.get("message"):
         raise Exception("Invalid GAME_ID.")
 
-    return data["liveData"]["plays"]["allPlays"]
+    plays = data["liveData"]["plays"]["allPlays"]
+    teams = (data["gameData"]['teams']['away']['triCode'], data["gameData"]['teams']['home']['triCode'])
 
+    if normalize:
+        return normalizers.normalize_events(plays, teams)
 
-def list_plays(game_id):
-    """
-    Return normalized play dictionaries.
-
-    Args:
-        game_id:
-
-    Returns:
-
-    """
-    return normalizers.events(list_plays_raw(game_id))
+    return plays
 
 
 def list_shots(game_id):
@@ -109,4 +103,4 @@ def list_shifts(game_id):
 
     data = resp.json()
 
-    return [normalizers.shift(d) for d in data["data"]]
+    return [normalizers.normalize_shift(d) for d in data["data"]]

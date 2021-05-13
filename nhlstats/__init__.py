@@ -5,6 +5,14 @@ from nhlstats.apiclient import (
     list_plays,
     list_shots,
     list_shifts,
-    list_plays_raw,
 )
+
+from nhlstats.game import (
+    Game,
+    Event,
+    Location,
+    Shifts,
+    Shift
+)
+
 from nhlstats import formatters

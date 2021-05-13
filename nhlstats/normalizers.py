@@ -3,9 +3,7 @@ __author__ = "tcaruso"
 
 import math
 
-from nhlstats.constants import FENWICK_EVENTS, SHOT_EVENTS, CORSI_EVENTS
-
-NET_X_LOCATION = 89
+from nhlstats.constants import FENWICK_EVENTS, SHOT_EVENTS, CORSI_EVENTS, NET_X_LOCATION
 
 
 def game_summary(gs):
@@ -37,47 +35,95 @@ def _calculate_angle(e):
         return None
 
 
-def event(ev, max_players=1):
-    event_type = ev["result"]["eventTypeId"]
-    e = {
-        "datetime": ev["about"]["dateTime"],
-        "period": ev["about"]["period"],
-        "period_time": ev["about"]["periodTime"],
-        "period_time_remaining": ev["about"]["periodTimeRemaining"],
-        "period_type": ev["about"]["periodType"],
-        "x": ev.get("coordinates", {}).get("x"),
-        "y": ev.get("coordinates", {}).get("y"),
-        "event_type": event_type,
-        "event_secondary_type": ev["result"].get("secondaryType"),
-        "event_description": ev["result"].get("description"),
-        "is_shot": event_type in SHOT_EVENTS,
-        "is_corsi": event_type in CORSI_EVENTS,
-        "is_fenwick": event_type in FENWICK_EVENTS,
-        "team_for": ev.get("team", {}).get("triCode"),
-    }
-
-    e["shot_distance"] = _calculate_distance(e) if e["is_corsi"] else None
-    e["shot_angle"] = _calculate_angle(e) if e["is_corsi"] else None
-
-    players = ev.get("players", [])
-    if len(players) < max_players:
-        players.extend([{}] * (max_players - len(players)))
-
-    for idx, player in enumerate(players):
-        e["player_{}".format(idx + 1)] = player.get("player", {}).get("fullName")
-        e["player_{}_type".format(idx + 1)] = player.get("playerType")
-        e["player_{}_id".format(idx + 1)] = player.get("player", {}).get("id")
-
-    return e
+EVENT_TYPE_MAP = {
+    ("GOAL", "Scorer"): "GOAL",
+    ("GOAL", "Assist"): "ASSIST",
+    ("GOAL", "Goalie"): "GOAL_AGAINST",
+    ("SHOT", "Shooter"): "SHOT",
+    ("SHOT", "Goalie"): "SAVE",
+    ("HIT", "Hitter"): "HIT",
+    ("HIT", "Hittee"): "HITTEE",
+    ("BLOCKED_SHOT", "Blocker"): "BLOCK",
+    ("BLOCKED_SHOT", "Shooter"): "BLOCKED_SHOT",
+    ("MISSED_SHOT", "Shooter"): "MISSED_SHOT",
+    ("GIVEAWAY", "PlayerID"): "GIVEAWAY",
+    ("TAKEAWAY", "PlayerID"): "TAKEAWAY",
+    ("FACEOFF", "Winner"): "FACEOFF_WIN",
+    ("FACEOFF", "Loser"): "FACEOFF_LOSS",
+    ("PENALTY", "PenaltyOn"): "PENALTY_ON",
+    ("PENALTY", "DrewBy"): "PENALTY_DRAWN",
+}
 
 
-def events(evs):
-    max_players = max(len(e.get("players", [])) for e in evs)
+def get_event_type(initial_type, player):
+    key = (initial_type, player.get('playerType'))
+    if None in key:
+        return initial_type
 
-    return [event(ev, max_players) for ev in evs]
+    try:
+        return EVENT_TYPE_MAP[key]
+    except Exception as e:
+        raise Exception("no match for event {} with key {}".format(e, repr(key)))
 
 
-def shift(sh):
+def should_switch_team(event_type):
+    return event_type in (
+        "GOAL_AGAINST", "SAVE", "BLOCKED_SHOT", "FACEOFF_LOSS", "PENALTY_DRAWN", "HITTEE"
+    )
+
+
+def other_team(team: str, teams: tuple):
+    return teams[len(teams) - (teams.index(team) + 1)]
+
+
+def normalize_event(ev, teams):
+    initial_event_type = ev["result"]["eventTypeId"]
+    players = ev.get("players", [{}])
+
+    for player in players:
+        new_event_type = get_event_type(initial_event_type, player)
+
+        e = {
+            "event_id": ev["about"]["eventIdx"],
+            "datetime": ev["about"]["dateTime"],
+            "period": ev["about"]["period"],
+            "period_time_elapsed": ev["about"]["periodTime"],
+            "period_time_remaining": ev["about"]["periodTimeRemaining"],
+            "regulation_time_remaining": "",
+            "period_type": ev["about"]["periodType"],
+            "x": ev.get("coordinates", {}).get("x"),
+            "y": ev.get("coordinates", {}).get("y"),
+            "event_type": new_event_type,
+            "event_secondary_type": ev["result"].get("secondaryType"),
+            "team_for": ev.get("team", {}).get("triCode"),
+            "player": player.get("player", {}).get("fullName"),
+            "player_type": player.get("playerType"),
+            "player_id": player.get("player", {}).get("id"),
+        }
+
+        if new_event_type == "STOP":
+            e["event_secondary_type"] = ev["result"].get("description")
+
+        e["is_shot"] = new_event_type in SHOT_EVENTS
+        e["is_corsi"] = new_event_type in CORSI_EVENTS
+        e["is_fenwick"] = new_event_type in FENWICK_EVENTS
+
+        e["shot_distance"] = _calculate_distance(e) if new_event_type in ("SHOT", "SAVE", "GOAL") else None
+        e["shot_angle"] = _calculate_angle(e) if new_event_type in ("SHOT", "SAVE", "GOAL") else None
+
+        if should_switch_team(new_event_type):
+            e['team_for'] = other_team(e['team_for'], teams)
+
+        yield e
+
+
+def normalize_events(evs, teams):
+    for event in evs:
+        for fanout_event in normalize_event(event, teams):
+            yield fanout_event
+
+
+def normalize_shift(sh):
     return {
         "id": sh["id"],
         "first_name": sh["firstName"],
